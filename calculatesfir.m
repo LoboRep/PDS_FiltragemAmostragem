@@ -1,0 +1,50 @@
+function windsize=calculatesfir(fcutsb,fcutpb,ripple_pb,ripple_sb,HB_filter,fs)
+ohcutpb=(fcutpb*2*pi)*(1/fs);
+ohcutsb=(fcutsb*2*pi)*(1/fs);
+Length_TW=ohcutsb-ohcutpb;
+Min_ripple=min([ripple_pb,ripple_sb,HB_filter]);
+order=20*log10(Min_ripple);
+MK=(-order-8)/(2.285*Length_TW);
+wind=MK;
+filter="MK";
+MR=0;
+MB=0;
+Mh=0;
+MH=0;
+MBl=0;
+if(order>-21)
+    MR=(4*pi/Length_TW-1);
+    wind=MR;
+    filter="MR";
+end
+    if(order>-25)
+         MB=(4*pi/Length_TW);
+         if(MB<wind)
+           wind=MB;
+            filter="MB";
+         end
+    end
+        if(order>-44)
+             Mh=(4*pi/Length_TW);
+             if(Mh<wind)
+           wind=Mh;
+            filter="Mh";
+         end
+        end
+            if(order>-53)
+                 MH=(4*pi/Length_TW);
+                     if(MH<wind)
+                        wind=MH;
+                         filter="MH";
+         end
+            end
+                 if(order>-74)
+                      MBl=(12*pi/Length_TW);
+                           if(MBl<wind)
+                            wind=MBl;
+                            filter="MBL";
+                            end
+                 end
+                 wind=ceil(wind);
+                  windsize = cast(wind,'uint16');   
+end
